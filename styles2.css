@@ -1,0 +1,67 @@
+body {
+    font-family: Arial, sans-serif;
+    background-image: url(/ma-11703.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    display: flex;
+    width: 80%;
+    margin-bottom: 20px;
+}
+
+.chat-box {
+    width: 45%;
+    height: 400px;
+    border: 1px solid #ccc;
+    background-color: rgba(255, 255, 255, 0.8);
+    overflow-y: scroll;
+    padding: 10px;
+    margin: 0 10px;
+}
+
+.chat-message {
+    padding: 5px;
+    border-bottom: 1px solid #ddd;
+    background-color: #e0f7fa;
+}
+
+.input-container {
+    display: flex;
+    justify-content: center;
+    width: 80%;
+}
+
+#username, #message {
+    padding: 10px;
+    width: 100%;
+    margin-right: 10px;
+}
+
+#send-button {
+    padding: 10px 20px;
+    cursor: pointer;
+    background-color: #00796b;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+#send-button:hover {
+    background-color: #004d40;
+}
+
+.delete-button {
+    cursor: pointer;
+    color: red;
+    background: none;
+    border: none;
+}
