@@ -31,13 +31,13 @@
 
   // Your web app's Firebase configuration
   const firebaseConfig = {
-    apiKey: "::::::::::::::::::::::::",
-    authDomain: "rioieeee.firebaseapp.com",
-    databaseURL: "**************",
-    projectId: "**************",
-    storageBucket: "*************:",
-    messagingSenderId: "**************",
-    appId: "**************"
+    apiKey: "*****************",
+    authDomain: "***************",
+    databaseURL: "*********************",
+    projectId: "***************",
+    storageBucket: "****************",
+    messagingSenderId: "***************",
+    appId: "*********************:"
   };
 
   // Initialize Firebase
@@ -45,7 +45,7 @@
         const database = getDatabase(app);
         const dbRef = ref(database, "chat");
 
-        $(document).ready(function () {
+    $(document).ready(function () {
     $('#send-button').click(async function () {
         const username = $('#username').val();
         const messageText = $('#message').val();
@@ -55,13 +55,14 @@
             let translatedText = messageText;
             let translatedName = username;
 
-            try {
-                if (isEnglish(messageText)) {
+        try {
+               if (isEnglish(messageText)) {
                     translatedText = await translateToJapanese(messageText);
                     translatedName = await translateToJapanese(username);
-                } else if (isJapanese(messageText)) {
-                    translatedText = await translateToEnglish(messageText);
-                    translatedName = await translateToEnglish(username);
+                } 
+                else if (isJapanese(messageText)) {
+                translatedText = await translateToEnglish(messageText);
+                translatedName = await translateToEnglish(username);
                 }
             } catch (error) {
                 console.error("Translation failed:", error);
@@ -80,76 +81,66 @@
             };
 
             set(messageRef, messageData);
-            saveMessageToLocalStorage(messageData);
+            // saveMessageToLocalStorage(messageData);
 
             $('#message').val(''); // メッセージ入力欄をクリア
             }
                 
             });
 
+            // function saveMessageToLocalStorage(message) {
+            // let messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
+            // messages.push(message);
+            // localStorage.setItem('chatMessages', JSON.stringify(messages));
+            // };
+
             onChildAdded(dbRef, function (data) {
-        const message = data.val();
-        displayMessage(message);
-    });
+            const message = data.val();
+            displayMessage(message);
+             });
 
-    onChildRemoved(dbRef, function (data) {
-        const messageId = data.key;
-        $(`#message-${messageId}`).remove();
-        removeMessageFromLocalStorage(messageId);
-    });
+            onChildRemoved(dbRef, function (data) {
+            const messageId = data.key;
+            $(`#message-${messageId}`).remove();
+            // removeMessageFromLocalStorage(messageId);
+            });
 
-    $('#chat-box-jp, #chat-box-en').on('click', '.delete-button', function () {
-        const messageId = $(this).data('id');
-        remove(ref(database, `chat/${messageId}`))
+        
+            $('#chat-box-jp, #chat-box-en').on('click', '.delete-button', function () {
+            const messageId = $(this).data('id');
+            remove(ref(database, `chat/${messageId}`))
             .then(() => {
-                $(`#message-${messageId}`).remove();
+             $(`#message-${messageId}`).remove();
             })
             .catch((error) => {
-                console.error("削除エラー:", error);
+            console.error("削除エラー:", error);
+
             });
-    });
+            });
 
-    function displayMessage(message) {
-        if (isEnglish(message.message)) {
-            // 左のチャットボックスに日本語、右のチャットボックスに英語を表示
-            $('#chat-box-jp').prepend(`
-                <div class="chat-message" id="message-${message.id}">
-                    <span><strong>${message.translatedUsername}</strong> (${message.timestamp})</span>
-                    <p>${message.translatedMessage}</p>
-                    <button class="delete-button" data-id="${message.id}">削除</button>
-                </div>
-            `);
-
-            $('#chat-box-en').prepend(`
-                <div class="chat-message" id="message-${message.id}">
-                    <span><strong>${message.username}</strong> (${message.timestamp})</span>
-                    <p>${message.message}</p>
-                    <button class="delete-button" data-id="${message.id}">削除</button>
-                </div>
-            `);
-
-        } else {
-            // 左のチャットボックスに日本語、右のチャットボックスに英語を表示
-            $('#chat-box-jp').prepend(`
-                <div class="chat-message" id="message-${message.id}">
-                    <span><strong>${message.username}</strong> (${message.timestamp})</span>
-                    <p>${message.message}</p>
-                    <button class="delete-button" data-id="${message.id}">削除</button>
-                </div>
-            `);
-
-            $('#chat-box-en').prepend(`
-                <div class="chat-message" id="message-${message.id}">
-                    <span><strong>${message.translatedUsername}</strong> (${message.timestamp})</span>
-                    <p>${message.translatedMessage}</p>
-                    <button class="delete-button" data-id="${message.id}">削除</button>
-                </div>
-
-            `);
-        }
-    }
-
-            function isJapanese(text) {
+            function displayMessage(message) {
+            const isMessageEnglish = isEnglish(message.message);
+    
+        // 左側チャットボックス
+        $('#chat-box-jp').prepend(`
+            <div class="chat-message" id="message-${message.id}">
+                <span><strong>${isMessageEnglish ? message.translatedUsername : message.username}</strong> (${message.timestamp})</span>
+                <p>${isMessageEnglish ? message.translatedMessage : message.message}</p>
+                <button class="delete-button" data-id="${message.id}">削除</button>
+            </div>
+        `);
+    
+        // 右側チャットボックス
+        $('#chat-box-en').prepend(`
+            <div class="chat-message" id="message-${message.id}">
+                <span><strong>${isMessageEnglish ? message.username : message.translatedUsername}</strong> (${message.timestamp})</span>
+                <p>${isMessageEnglish ? message.message : message.translatedMessage}</p>
+                <button class="delete-button" data-id="${message.id}">削除</button>
+            </div>
+        ` );
+          }
+    
+           function isJapanese(text) {
                 return /[\u3000-\u303F\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF\uFF66-\uFF9F]/.test(text);
             }
 
@@ -158,7 +149,7 @@
             }
 
             async function translateToEnglish(text) {
-                const apiKey = '***********************************:'; 
+                const apiKey = '***********************'; 
                 const url = `https://translation.googleapis.com/language/translate/v2?key=${apiKey}`;
                 const response = await fetch(url, {
                     method: 'POST',
@@ -171,58 +162,68 @@
                         source: 'ja'
                     })
                 });
-                const data = await response.json();
-                return data.data.translations[0].translatedText;
-            }
-
-            async function translateToEnglish(text) {
-                const apiKey = '***************************:';
-                const url = `https://translation.googleapis.com/language/translate/v2?key=${apiKey}`;
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        q: text,
-                        target: 'en',
-                        source: 'ja'
-                    })
-                });
-                const data = await response.json();
-        if (data && data.data && data.data.translations) {
-            return data.data.translations[0].translatedText;
-        } else {
+             
+     // ここでresponseを正しく解析し、data変数を定義します
+            const data = await response.json();
+             if (data && data.data && data.data.translations) {
+             return data.data.translations[0].translatedText;
+             } else {
             console.error('Translation API response is not in the expected format:', data);
             return 'Translation error';
-        }
-    }
+            }
+            }
+            
+            async function translateToJapanese(text) {
+            const apiKey = '******************'; 
+            const url = `https://translation.googleapis.com/language/translate/v2?key=${apiKey}`;
+            const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                q: text,
+                target: 'ja',
+                source: 'en'
+            })
+            });
+            // ここでresponseを正しく解析し、data変数を定義します
+            const data = await response.json();
+             if (data && data.data && data.data.translations) {
+             return data.data.translations[0].translatedText;
+             } else {
+            console.error('Translation API response is not in the expected format:', data);
+            return 'Translation error';
+            }
 
-    function saveMessageToLocalStorage(message) {
-        let messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
-        messages.push(message);
-        localStorage.setItem('chatMessages', JSON.stringify(messages));
-    }
+            // function saveMessageToLocalStorage(message) {
+            // let messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
+            // messages.push(message);
+            // localStorage.setItem('chatMessages', JSON.stringify(messages));
+            //  }
 
-    function loadMessagesFromLocalStorage() {
-        const messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
-        messages.forEach(message => {
-            displayMessage(message);
-        });
-    }
+            // function loadMessagesFromLocalStorage() {
+            // const messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
+            // messages.forEach(message => {
+            // displayMessage(message);
+            // });
+            // }
 
-    function removeMessageFromLocalStorage(messageId) {
-        let messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
-        messages = messages.filter(message => message.id !== messageId);
-        localStorage.setItem('chatMessages', JSON.stringify(messages));
-    }
+            // function removeMessageFromLocalStorage(messageId) {
+            // let messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
+            // messages = messages.filter(message => message.id !== messageId);
+            // localStorage.setItem('chatMessages', JSON.stringify(messages));
+            //  }
 
     // ページ読み込み時にlocalStorageからメッセージをロード
-    loadMessagesFromLocalStorage();
-});
+    // loadMessagesFromLocalStorage();
+    }
+    });
+
     </script>
          
 </body>
 </html>
         
+    
     
