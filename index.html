@@ -81,18 +81,11 @@
             };
 
             set(messageRef, messageData);
-            // saveMessageToLocalStorage(messageData);
 
             $('#message').val(''); // メッセージ入力欄をクリア
             }
                 
             });
-
-            // function saveMessageToLocalStorage(message) {
-            // let messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
-            // messages.push(message);
-            // localStorage.setItem('chatMessages', JSON.stringify(messages));
-            // };
 
             onChildAdded(dbRef, function (data) {
             const message = data.val();
@@ -195,28 +188,6 @@
             console.error('Translation API response is not in the expected format:', data);
             return 'Translation error';
             }
-
-            // function saveMessageToLocalStorage(message) {
-            // let messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
-            // messages.push(message);
-            // localStorage.setItem('chatMessages', JSON.stringify(messages));
-            //  }
-
-            // function loadMessagesFromLocalStorage() {
-            // const messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
-            // messages.forEach(message => {
-            // displayMessage(message);
-            // });
-            // }
-
-            // function removeMessageFromLocalStorage(messageId) {
-            // let messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
-            // messages = messages.filter(message => message.id !== messageId);
-            // localStorage.setItem('chatMessages', JSON.stringify(messages));
-            //  }
-
-    // ページ読み込み時にlocalStorageからメッセージをロード
-    // loadMessagesFromLocalStorage();
     }
     });
 
